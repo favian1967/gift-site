@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хмммммм.....</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .background-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .symbol {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 3rem;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+                opacity: 0.2;
+            }
+        }
+
+        .symbol:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 25s; }
+        .symbol:nth-child(2) { left: 80%; top: 10%; animation-delay: 3s; animation-duration: 20s; }
+        .symbol:nth-child(3) { left: 50%; top: 70%; animation-delay: 6s; animation-duration: 22s; }
+        .symbol:nth-child(4) { left: 20%; top: 80%; animation-delay: 2s; animation-duration: 28s; }
+        .symbol:nth-child(5) { left: 70%; top: 60%; animation-delay: 8s; animation-duration: 24s; }
+        .symbol:nth-child(6) { left: 40%; top: 30%; animation-delay: 4s; animation-duration: 26s; }
+        .symbol:nth-child(7) { left: 90%; top: 80%; animation-delay: 7s; animation-duration: 23s; }
+        .symbol:nth-child(8) { left: 15%; top: 50%; animation-delay: 5s; animation-duration: 27s; }
+        .symbol:nth-child(9) { left: 60%; top: 15%; animation-delay: 1s; animation-duration: 21s; }
+        .symbol:nth-child(10) { left: 35%; top: 85%; animation-delay: 9s; animation-duration: 25s; }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .message {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .date {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s forwards;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            font-family: 'Georgia', serif;
+        }
+
+        button:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .start-btn {
+            font-size: 1.5rem;
+            padding: 20px 60px;
+        }
+
+        .next-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            font-size: 1.5rem;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 1s 1s forwards;
+        }
+
+        .language-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .recommended {
+            position: relative;
+        }
+
+        .recommended::after {
+            content: '✨';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.5rem;
+        }
+
+        .audio-player {
+            margin: 30px auto;
+            padding: 20px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            max-width: 400px;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .transcript {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .transcript.show {
+            display: block;
+        }
+
+        .show-text-btn {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 10px 25px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Gallery styles */
+        .gallery-container {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        .gallery-intro {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .gallery-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            position: relative;
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            width: 280px;
+            height: 320px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            animation: floatItem 3s ease-in-out infinite;
+        }
+
+        .gallery-item:nth-child(1) {
+            animation-delay: 0s;
+            transform: rotate(-2deg);
+        }
+
+        .gallery-item:nth-child(2) {
+            animation-delay: 1.5s;
+            transform: rotate(2deg);
+        }
+
+        @keyframes floatItem {
+            0%, 100% {
+                transform: translateY(0) rotate(-2deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(-2deg);
+            }
+        }
+
+        .gallery-item:nth-child(2) {
+            animation-name: floatItem2;
+        }
+
+        @keyframes floatItem2 {
+            0%, 100% {
+                transform: translateY(0) rotate(2deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(2deg);
+            }
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.1) rotate(0deg) !important;
+            border-color: #fff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.3), rgba(160, 82, 45, 0.2));
+        }
+
+        .gallery-item-placeholder .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .gallery-item-placeholder .label {
+            font-size: 1rem;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .author-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.8), rgba(255, 105, 180, 0.8));
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 25px rgba(255, 20, 147, 0.8);
+            }
+        }
+
+        .author-tag.me {
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.8), rgba(0, 191, 255, 0.8));
+            box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 25px rgba(255, 20, 147, 0.8);
+            }
+        }
+
+        .author-tag.me {
+            animation-name: glowBlue;
+        }
+
+        @keyframes glowBlue {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 25px rgba(30, 144, 255, 0.8);
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border: 2px solid #fff;
+            border-radius: 10px;
+        }
+
+        .modal-caption {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            color: #aaa;
+            transform: scale(1.2);
+        }
+
+        .upload-instructions {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .message {
+                font-size: 1.4rem;
+            }
+
+            .next-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .close {
+                right: 20px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="background-symbols">
+    <div class="symbol">💐</div>
+    <div class="symbol">🌹</div>
+    <div class="symbol">❤️</div>
+    <div class="symbol">✨</div>
+    <div class="symbol">🌸</div>
+    <div class="symbol">💝</div>
+    <div class="symbol">🌺</div>
+    <div class="symbol">🎀</div>
+    <div class="symbol">💫</div>
+    <div class="symbol">🌼</div>
+</div>
+
+<div class="container">
+    <div id="screen-0" class="screen">
+        <div class="message">Хмммммм.....</div>
+        <button class="start-btn" onclick="nextScreen()">Начать</button>
+    </div>
+
+    <div id="screen-1" class="screen hidden">
+        <div class="message">Привет, думаю ты не знаешь что это за сайт я тебе скинул?</div>
+    </div>
+
+    <div id="screen-2" class="screen hidden">
+        <div class="message">Ты же знаешь что за день сегодня?</div>
+        <div class="date">30.11.2025</div>
+    </div>
+
+    <div id="screen-3" class="screen hidden">
+        <div class="message">Ты непротив если мы продолжим на английском?) Сразу предупрежу все писал без переводчика, так что сори за ошибки)</div>
+        <div class="language-buttons">
+            <button class="recommended" onclick="selectLanguage('en')">Английский<br>(Настоятельно рекомендуется)</button>
+            <button onclick="showWarning()">Русский</button>
+        </div>
+    </div>
+
+    <div id="warning" class="screen hidden">
+        <div class="message">я тут подумал, у тебя выбора не будет) тебе придется понять мой англ)</div>
+    </div>
+
+    <div id="screen-4" class="screen hidden">
+        <div class="message">Happy Mother's Day, Mom! 🌹</div>
+        <div class="audio-player">
+            <div style="margin-bottom: 10px;">🎵 Голосовое сообщение для тебя:</div>
+            <audio controls>
+                <source src="voice-message.mp3" type="audio/mpeg">
+                <source src="voice-message.ogg" type="audio/ogg">
+                Ваш браузер не поддерживает аудио элемент.
+            </audio>
+            <button class="show-text-btn" onclick="toggleTranscript()">Показать текст</button>
+            <div id="transcript" class="transcript">
+                <p>Текст голосового сообщения :
+
+                    Okay, Mom, Happy Mother's Day.
+
+                    Thank you for being in my life.
+
+                    Thank you for your love and care.
+
+                    I love you very much, and
+                    I hope Ulyana and Timofei won't let you down.
+
+                    I also want to say this website was developed by me
+                    , yes, it is simple, very simple, but I'll tell you
+                    a little secret, I work more on servers than visuals,
+                    but I really still tried very hard
+
+                    time is up, I have to go, bb)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-5" class="screen hidden">
+        <div class="message">We made some drawings for you! 🎨✨</div>
+        <div class="gallery-container">
+            <div class="gallery-intro">
+                Made with love by Tima and me 💕
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openModal(0)">
+                    <div class="gallery-item-placeholder">
+                        <div class="icon">🖌️</div>
+                        <div class="label">My Drawing</div>
+                    </div>
+                    <div class="author-tag me">Me</div>
+                </div>
+                <div class="gallery-item" onclick="openModal(1)">
+                    <div class="gallery-item-placeholder">
+                        <div class="icon">✨</div>
+                        <div class="label">Timofey's Drawing</div>
+                    </div>
+                    <div class="author-tag">Tima</div>
+                </div>
+            </div>
+            <div class="upload-instructions">
+                💡 Click on any drawing to view it in full size
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-6" class="screen hidden">
+        <div class="message">
+            That's all, thanks for your time and again HAPPY MOTHER's DAY YOHOOOOOO ;)
+        </div>
+    </div>
+
+    <div id="screen-7" class="screen hidden">
+        <div class="message">Пока :)</div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextScreen()">→</button>
+</div>
+
+<!-- Modal for full-size images -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="close">&times;</span>
+    <div class="modal-content">
+        <img class="modal-image" id="modalImage" src="" alt="">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+</div>
+
+<script>
+    let currentScreen = 0;
+    const totalScreens = 8;
+
+    // Gallery data - здесь можно добавить пути к вашим изображениям
+    const galleryImages = [
+        {
+            src: 'my-drawing.png', // Путь к первому рисунку
+            alt: 'Мой рисунок',
+            author: 'От меня'
+        },
+        {
+            src: 'tima-drawing.png', // Путь ко второму рисунку
+            alt: 'Рисунок Тимохи',
+            author: 'Тимоша'
+        },
+        {
+            src: '', // Путь к третьему рисунку
+            alt: 'Мой второй рисунок',
+            author: 'От меня'
+        },
+        {
+            src: '', // Путь к четвертому рисунку
+            alt: 'Второй рисунок Ульяны',
+            author: 'От Ульяны'
+        }
+    ];
+
+    function nextScreen() {
+        document.getElementById(`screen-${currentScreen}`).classList.add('hidden');
+        currentScreen++;
+
+        if (currentScreen === 3) {
+            document.getElementById(`screen-${currentScreen}`).classList.remove('hidden');
+            document.getElementById('nextBtn').style.display = 'none';
+        } else if (currentScreen < totalScreens) {
+            document.getElementById(`screen-${currentScreen}`).classList.remove('hidden');
+
+            if (currentScreen > 0 && currentScreen !== 4) {
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+
+            if (currentScreen === 4 || currentScreen === 5) {
+                setTimeout(() => {
+                    document.getElementById('nextBtn').style.display = 'block';
+                }, 1000);
+            }
+        }
+    }
+
+    function selectLanguage(lang) {
+        if (lang === 'en') {
+            document.getElementById('screen-3').classList.add('hidden');
+            document.getElementById('screen-4').classList.remove('hidden');
+            currentScreen = 4;
+            document.getElementById('nextBtn').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('nextBtn').style.display = 'block';
+            }, 1000);
+        }
+    }
+
+    function showWarning() {
+        document.getElementById('screen-3').classList.add('hidden');
+        document.getElementById('warning').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('warning').classList.add('hidden');
+            document.getElementById('screen-3').classList.remove('hidden');
+        }, 3000);
+    }
+
+    function toggleTranscript() {
+        const transcript = document.getElementById('transcript');
+        const btn = document.querySelector('.show-text-btn');
+
+        if (transcript.classList.contains('show')) {
+            transcript.classList.remove('show');
+            btn.textContent = 'Показать текст';
+        } else {
+            transcript.classList.add('show');
+            btn.textContent = 'Скрыть текст';
+        }
+    }
+
+    function openModal(index) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+
+        modal.style.display = 'block';
+
+        if (galleryImages[index].src) {
+            modalImg.src = galleryImages[index].src;
+        } else {
+            modalImg.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23333"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23fff" font-size="24" font-family="Georgia"%3ERисунок ' + (index + 1) + '%3C/text%3E%3C/svg%3E';
+        }
+
+        modalCaption.textContent = galleryImages[index].alt + ' - ' + galleryImages[index].author;
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
+</body>
+</html>
