@@ -453,6 +453,114 @@
                 font-size: 30px;
             }
         }
+
+
+
+
+
+        /* MOBILE ADAPTATION */
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+                overflow-y: auto;
+                align-items: flex-start;
+                justify-content: flex-start;
+            }
+
+            .container {
+                width: 100%;
+                padding: 20px 10px;
+                margin-top: 40px;
+            }
+
+            .message {
+                font-size: 1.2rem;
+                line-height: 1.4;
+                margin-bottom: 25px;
+            }
+
+            .date {
+                font-size: 1rem;
+            }
+
+            button, .start-btn {
+                width: 100%;
+                max-width: 320px;
+                font-size: 1rem;
+                padding: 12px 20px;
+                margin: 8px auto;
+                display: block;
+            }
+
+            .next-btn {
+                bottom: 15px;
+                right: 15px;
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+            }
+
+            .language-buttons {
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            /* AUDIO PLAYER */
+            .audio-player {
+                width: 100%;
+                padding: 15px;
+                margin-top: 25px;
+            }
+
+            audio {
+                width: 100%;
+            }
+
+            /* GALLERY */
+            .gallery-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 20px;
+                width: 100%;
+            }
+
+            .gallery-item {
+                width: 100%;
+                height: 240px;
+                border-radius: 12px;
+            }
+
+            .gallery-item-placeholder .icon {
+                font-size: 3rem;
+            }
+
+            /* MODAL */
+            .modal-content {
+                padding: 10px;
+            }
+
+            .modal-image {
+                max-height: 60vh;
+            }
+
+            .close {
+                right: 20px;
+                font-size: 28px;
+                top: 15px;
+            }
+
+            .modal-caption {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+        }
+
+
+
+
+
+
     </style>
 </head>
 <body>
